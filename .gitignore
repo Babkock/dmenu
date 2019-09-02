@@ -1,0 +1,5 @@
+*.diff
+dmenu
+stest
+*.o
+
