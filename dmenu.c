@@ -89,6 +89,15 @@ calcoffsets(void)
 			break;
 }
 
+static int
+max_textw(void)
+{
+	int len = 0;
+	for (struct item *item = items; item && item->text; item++)
+		len = MAX(TEXTW(item->text), len);
+	return len;
+}
+
 static void
 cleanup(void)
 {
@@ -739,6 +748,7 @@ setup(void)
 	bh = drw->fonts->h + 2;
 	lines = MAX(lines, 0);
 	mh = (lines + 1) * bh;
+	promptw = (prompt && *prompt) ? TEXTW(prompt) - lrpad / 4 : 0;
 #ifdef XINERAMA
 	i = 0;
 	if (parentwin == root && (info = XineramaQueryScreens(dpy, &n))) {
@@ -766,20 +776,34 @@ setup(void)
 					break;
 
 		x = info[i].x_org;
-		y = info[i].y_org + (topbar ? 0 : info[i].height - mh);
+		
+		//y = info[i].y_org + (topbar ? 0 : info[i].height - mh);
+		
 		mw = info[i].width;
+		
+		//mw = MIN(MAX(max_textw() + promptw, 100), info[i].width);
+		//x = info[i].x_org + ((info[i].width  - (mw)) / 1.5);
+		
+		y = info[i].y_org + ((info[i].height - (mh - 10)) / 2);
+
 		XFree(info);
 	} else
 #endif
 	{
 		if (!XGetWindowAttributes(dpy, parentwin, &wa))
-			die("could not get embedding window attributes: 0x%lx",
-			    parentwin);
+			die("could not get embedding window attributes: 0x%lx", parentwin);
 		x = 0;
-		y = topbar ? 0 : wa.height - mh;
+		
+		//y = topbar ? 0 : wa.height - mh;
+		
 		mw = wa.width;
+		
+		//mw = MIN(MAX(max_textw() + promptw, 100), wa.width);
+		//x = (wa.width  - (mw)) / 1.5;
+		
+		y = (wa.height - (mh - 10)) / 2;
 	}
-	promptw = (prompt && *prompt) ? TEXTW(prompt) - lrpad / 4 : 0;
+	//promptw = (prompt && *prompt) ? TEXTW(prompt) - lrpad / 4 : 0;
 	inputw = MIN(inputw, mw/3);
 	match();
 
