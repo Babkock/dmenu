@@ -549,8 +549,7 @@ buttonpress(XEvent *e)
 
 	/* middle-mouse click: paste selection */
 	if (ev->button == Button2) {
-		XConvertSelection(dpy, (ev->state & ShiftMask) ? clip : XA_PRIMARY,
-						  utf8, utf8, win, CurrentTime);
+		XConvertSelection(dpy, (ev->state & ShiftMask) ? clip : XA_PRIMARY, utf8, utf8, win, CurrentTime);
 		drawmenu();
 		return;
 	}
@@ -641,9 +640,7 @@ paste(void)
 	Atom da;
 
 	/* we have been given the current selection, now insert it into input */
-	if (XGetWindowProperty(dpy, win, utf8, 0, (sizeof text / 4) + 1, False,
-	                   utf8, &da, &di, &dl, &dl, (unsigned char **)&p)
-	    == Success && p) {
+	if (XGetWindowProperty(dpy, win, utf8, 0, (sizeof text / 4) + 1, False, utf8, &da, &di, &dl, &dl, (unsigned char **)&p) == Success && p) {
 		insert(p, (q = strchr(p, '\n')) ? q - p : (ssize_t)strlen(p));
 		XFree(p);
 	}
