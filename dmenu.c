@@ -127,9 +127,6 @@ drawitem(struct item *item, int x, int y, int w)
 {
 	if (item == sel)
 		drw_setscheme(drw, scheme[SchemeSel]);
-	/*
-	 * new
-	*/
 	else if (item->left == sel || item->right == sel)
 		drw_setscheme(drw, scheme[SchemeMid]);
 	else if (item->out)
