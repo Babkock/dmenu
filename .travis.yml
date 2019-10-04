@@ -7,7 +7,7 @@ addons:
       - &base_deps
         - libxinerama-dev
         - libxft-dev
-        - libX11-dev
+        - libx11-dev
 
 script:
     - make clean
