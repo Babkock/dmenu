@@ -1,5 +1,7 @@
 # dmenu
 
+[![Build Status](https://travis-ci.org/Babkock/dmenu.svg?branch=master)](https://travis-ci.org/Babkock/dmenu)
+
 Suckless dynamic menu. Since this is a tool I pretty much rely on now, I made a new repository for it.
 
 Features:
