@@ -1,6 +1,14 @@
 language: c
 compiler:
     - gcc
+addons:
+  apt:
+    packages:
+      - &base_deps
+        - libxinerama-dev
+        - libxft-dev
+        - libX11-dev
+
 script:
     - make clean
     - make
