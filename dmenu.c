@@ -15,6 +15,7 @@
 #include <X11/Xresource.h>
 #ifdef XINERAMA
 #include <X11/extensions/Xinerama.h>
+#include <X11/extensions/Xrender.h>
 #endif
 #include <X11/Xft/Xft.h>
 
@@ -42,7 +43,7 @@ static Drw *drw;
 static Clr *scheme[SchemeLast];
 
 /* temporary arrays to allow overriding Xresources values */
-static char *colortemp[4];
+static char *colortemp[6];
 //static char *tempfonts;
 
 static int useargb = 0;
@@ -125,6 +126,8 @@ drawitem(struct item *item, int x, int y, int w)
 {
 	if (item == sel)
 		drw_setscheme(drw, scheme[SchemeSel]);
+	else if (item->left == sel || item->right == sel)
+		drw_setscheme(drw, scheme[SchemeMid]);
 	else if (item->out)
 		drw_setscheme(drw, scheme[SchemeOut]);
 	else
@@ -154,13 +157,6 @@ drawmenu(void)
 	w -= lrpad / 2;
 	x += lrpad / 2;
 
-	/*
-	curpos = TEXTW(text) - TEXTW(&text[cursor]);
-	if ((curpos += lrpad / 2 - 1) < w) {
-		drw_setscheme(drw, scheme[SchemeNorm]);
-		drw_rect(drw, x + curpos, 2, 2, bh - 4, 1, 0);
-	}
-	*/
 	rcurlen = drw_fontset_getwidth(drw, text + cursor);
 	curlen = drw_fontset_getwidth(drw, text) - rcurlen;
 	curpos += curlen - oldcurlen;
@@ -735,12 +731,8 @@ setup(void)
 	Window pw;
 	int a, di, n, area = 0;
 #endif
-	/* init appearance */
-	/* for (j = 0; j < SchemeLast; j++)
-		scheme[j] = drw_scm_create(drw, colors[j], alphas[i], 2);
-	*/
 	for (j = 0; j < SchemeLast; j++)
-		scheme[j] = drw_scm_create(drw, colors[j], alphas[i], 2);
+		scheme[j] = drw_scm_create(drw, (const char **)colors[j], alphas[j], 2);
 	for (j = 0; j < SchemeOut; ++j) {
 		for (i = 0; i < 2; ++i)
 			free(colors[j][i]);
@@ -843,7 +835,8 @@ static void
 usage(void)
 {
 	fputs("usage: dmenu [-bfiv] [-l lines] [-p prompt] [-fn font] [-m monitor]\n"
-	      "             [-nb color] [-nf color] [-sb color] [-sf color] [-w windowid]\n", stderr);
+	      "             [-nb color] [-nf color] [-sb color] [-sf color] [-w windowid]\n"
+	      "             [-mb color] [-mf color]\n", stderr);
 	exit(1);
 }
 
@@ -874,7 +867,6 @@ readxresources(void)
 			colors[SchemeSel][ColFg] = strdup(xval.addr);
 		else
 			colors[SchemeSel][ColFg] = strdup(colors[SchemeSel][ColFg]);
-		/*
 		if (XrmGetResource(xdb, "dmenu.midbackground", "*", &type, &xval))
 			colors[SchemeMid][ColBg] = strdup(xval.addr);
 		else
@@ -883,7 +875,6 @@ readxresources(void)
 			colors[SchemeMid][ColFg] = strdup(xval.addr);
 		else
 			colors[SchemeMid][ColFg] = strdup(colors[SchemeMid][ColFg]);
-		*/
 
 		XrmDestroyDatabase(xdb);
 	}
@@ -930,6 +921,12 @@ main(int argc, char *argv[])
 		else if (!strcmp(argv[i], "-sf"))  /* selected foreground color */
 			//colors[SchemeSel][ColFg] = argv[++i];
 			colortemp[3] = argv[++i];
+
+		else if (!strcmp(argv[i], "-mb"))  /* middle background color */
+			colortemp[4] = argv[++i];
+		else if (!strcmp(argv[i], "-mf"))  /* middle foreground color */
+			colortemp[5] = argv[++i];
+
 		else if (!strcmp(argv[i], "-w"))   /* embedding window id */
 			embed = argv[++i];
 		else if (!strcmp(argv[i], "-bw")) /* border width */
@@ -950,8 +947,8 @@ main(int argc, char *argv[])
 
 	xinitvisual();
 	drw = drw_create(dpy, screen, root, wa.width, wa.height, visual, depth, cmap);
-	//if (!drw_fontset_create(drw, fonts, LENGTH(fonts)))
 	readxresources();
+
 	/* Now we check whether to override Xresources with command line parameters */
 	if (colortemp[0])
 		colors[SchemeNorm][ColBg] = strdup(colortemp[0]);
@@ -961,12 +958,10 @@ main(int argc, char *argv[])
 		colors[SchemeSel][ColBg] = strdup(colortemp[2]);
 	if (colortemp[3])
 		colors[SchemeSel][ColFg] = strdup(colortemp[3]);
-	/*
 	if (colortemp[4])
 		colors[SchemeMid][ColBg] = strdup(colortemp[4]);
 	if (colortemp[5])
 		colors[SchemeMid][ColFg] = strdup(colortemp[5]);
-	*/
 	if (!drw_fontset_create(drw, (const char **)fonts, LENGTH(fonts)))
 		die("no fonts could be loaded.");
 

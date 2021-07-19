@@ -11,7 +11,7 @@
 #define SCREENWIDTH           1900
 
 /* enums */
-enum { SchemeNorm, SchemeSel, SchemeOut, SchemeLast }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeMid, SchemeOut, SchemeLast }; /* color schemes */
 
 struct item {
 	char *text;
