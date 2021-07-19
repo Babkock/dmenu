@@ -6,10 +6,11 @@
 static int topbar = 1;                      /* -b  option; if 0, dmenu appears at bottom     */
 
 unsigned int border_width = 4;
-static const unsigned int alpha = 0x10;
+static const unsigned int alpha = 0x60U;
+
 /* -fn option overrides fonts[0]; default X11 font or font set */
 static const char *fonts[] = {
-	"monospace:size=10"
+	"IBMPlex:size=15:antialias=true:file=/usr/share/fonts/truetype/ibm-plex/Blex Mono Nerd Font Complete.ttf"
 };
 static const char *prompt      = "$";      /* -p  option; prompt to the left of input field */
 static const char *colors[SchemeLast][2] = {
