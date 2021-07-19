@@ -18,26 +18,9 @@
 #endif
 #include <X11/Xft/Xft.h>
 
+#include "dmenu.h"
 #include "drw.h"
 #include "util.h"
-
-/* macros */
-#define INTERSECT(x,y,w,h,r)  (MAX(0, MIN((x)+(w),(r).x_org+(r).width)  - MAX((x),(r).x_org)) \
-                             && MAX(0, MIN((y)+(h),(r).y_org+(r).height) - MAX((y),(r).y_org)))
-#define LENGTH(X)             (sizeof X / sizeof X[0])
-#define TEXTW(X)              (drw_fontset_getwidth(drw, (X)) + lrpad)
-
-#define OPAQUE                0xffU
-#define SCREENWIDTH           1900
-
-/* enums */
-enum { SchemeNorm, SchemeSel, SchemeOut, SchemeLast }; /* color schemes */
-
-struct item {
-	char *text;
-	struct item *left, *right;
-	int out;
-};
 
 static char text[BUFSIZ] = "";
 static char *embed;
@@ -60,7 +43,7 @@ static Clr *scheme[SchemeLast];
 
 /* temporary arrays to allow overriding Xresources values */
 static char *colortemp[4];
-static char *tempfonts;
+//static char *tempfonts;
 
 static int useargb = 0;
 static Visual *visual;
@@ -753,8 +736,15 @@ setup(void)
 	int a, di, n, area = 0;
 #endif
 	/* init appearance */
+	/* for (j = 0; j < SchemeLast; j++)
+		scheme[j] = drw_scm_create(drw, colors[j], alphas[i], 2);
+	*/
 	for (j = 0; j < SchemeLast; j++)
 		scheme[j] = drw_scm_create(drw, colors[j], alphas[i], 2);
+	for (j = 0; j < SchemeOut; ++j) {
+		for (i = 0; i < 2; ++i)
+			free(colors[j][i]);
+	}
 
 	clip = XInternAtom(dpy, "CLIPBOARD",   False);
 	utf8 = XInternAtom(dpy, "UTF8_STRING", False);
@@ -857,6 +847,48 @@ usage(void)
 	exit(1);
 }
 
+static void
+readxresources(void)
+{
+	XrmInitialize();
+
+	char *xrm;
+	if ((xrm = XResourceManagerString(drw->dpy))) {
+		char *type;
+		XrmDatabase xdb = XrmGetStringDatabase(xrm);
+		XrmValue xval;
+
+		if (XrmGetResource(xdb, "dmenu.background", "*", &type, &xval))
+			colors[SchemeNorm][ColBg] = strdup(xval.addr);
+		else
+			colors[SchemeNorm][ColBg] = strdup(colors[SchemeNorm][ColBg]);
+		if (XrmGetResource(xdb, "dmenu.foreground", "*", &type, &xval))
+			colors[SchemeNorm][ColFg] = strdup(xval.addr);
+		else
+			colors[SchemeNorm][ColFg] = strdup(colors[SchemeNorm][ColFg]);
+		if (XrmGetResource(xdb, "dmenu.selbackground", "*", &type, &xval))
+			colors[SchemeSel][ColBg] = strdup(xval.addr);
+		else
+			colors[SchemeSel][ColBg] = strdup(colors[SchemeSel][ColBg]);
+		if (XrmGetResource(xdb, "dmenu.selforeground", "*", &type, &xval))
+			colors[SchemeSel][ColFg] = strdup(xval.addr);
+		else
+			colors[SchemeSel][ColFg] = strdup(colors[SchemeSel][ColFg]);
+		/*
+		if (XrmGetResource(xdb, "dmenu.midbackground", "*", &type, &xval))
+			colors[SchemeMid][ColBg] = strdup(xval.addr);
+		else
+			colors[SchemeMid][ColBg] = strdup(colors[SchemeMid][ColBg]);
+		if (XrmGetResource(xdb, "dmenu.midforeground", "*", &type, &xval))
+			colors[SchemeMid][ColFg] = strdup(xval.addr);
+		else
+			colors[SchemeMid][ColFg] = strdup(colors[SchemeMid][ColFg]);
+		*/
+
+		XrmDestroyDatabase(xdb);
+	}
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -887,13 +919,17 @@ main(int argc, char *argv[])
 		else if (!strcmp(argv[i], "-fn"))  /* font or font set */
 			fonts[0] = argv[++i];
 		else if (!strcmp(argv[i], "-nb"))  /* normal background color */
-			colors[SchemeNorm][ColBg] = argv[++i];
+			//colors[SchemeNorm][ColBg] = argv[++i];
+			colortemp[0] = argv[++i];
 		else if (!strcmp(argv[i], "-nf"))  /* normal foreground color */
-			colors[SchemeNorm][ColFg] = argv[++i];
+			//colors[SchemeNorm][ColFg] = argv[++i];
+			colortemp[1] = argv[++i];
 		else if (!strcmp(argv[i], "-sb"))  /* selected background color */
-			colors[SchemeSel][ColBg] = argv[++i];
+			//colors[SchemeSel][ColBg] = argv[++i];
+			colortemp[2] = argv[++i];
 		else if (!strcmp(argv[i], "-sf"))  /* selected foreground color */
-			colors[SchemeSel][ColFg] = argv[++i];
+			//colors[SchemeSel][ColFg] = argv[++i];
+			colortemp[3] = argv[++i];
 		else if (!strcmp(argv[i], "-w"))   /* embedding window id */
 			embed = argv[++i];
 		else if (!strcmp(argv[i], "-bw")) /* border width */
@@ -910,12 +946,30 @@ main(int argc, char *argv[])
 	if (!embed || !(parentwin = strtol(embed, NULL, 0)))
 		parentwin = root;
 	if (!XGetWindowAttributes(dpy, parentwin, &wa))
-		die("could not get embedding window attributes: 0x%lx",
-		    parentwin);
+		die("could not get embedding window attributes: 0x%lx", parentwin);
+
 	xinitvisual();
 	drw = drw_create(dpy, screen, root, wa.width, wa.height, visual, depth, cmap);
-	if (!drw_fontset_create(drw, fonts, LENGTH(fonts)))
+	//if (!drw_fontset_create(drw, fonts, LENGTH(fonts)))
+	readxresources();
+	/* Now we check whether to override Xresources with command line parameters */
+	if (colortemp[0])
+		colors[SchemeNorm][ColBg] = strdup(colortemp[0]);
+	if (colortemp[1])
+		colors[SchemeNorm][ColFg] = strdup(colortemp[1]);
+	if (colortemp[2])
+		colors[SchemeSel][ColBg] = strdup(colortemp[2]);
+	if (colortemp[3])
+		colors[SchemeSel][ColFg] = strdup(colortemp[3]);
+	/*
+	if (colortemp[4])
+		colors[SchemeMid][ColBg] = strdup(colortemp[4]);
+	if (colortemp[5])
+		colors[SchemeMid][ColFg] = strdup(colortemp[5]);
+	*/
+	if (!drw_fontset_create(drw, (const char **)fonts, LENGTH(fonts)))
 		die("no fonts could be loaded.");
+
 	lrpad = drw->fonts->h;
 
 #ifdef __OpenBSD__
@@ -936,7 +990,7 @@ main(int argc, char *argv[])
 	return 1; /* unreachable */
 }
 
- void
+static void
 xinitvisual()
 {
 	XVisualInfo *infos;
