@@ -12,6 +12,7 @@
 #include <X11/Xatom.h>
 #include <X11/Xproto.h>
 #include <X11/Xutil.h>
+#include <X11/Xresource.h>
 #ifdef XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif
@@ -56,6 +57,10 @@ static XIC xic;
 
 static Drw *drw;
 static Clr *scheme[SchemeLast];
+
+/* temporary arrays to allow overriding Xresources values */
+static char *colortemp[4];
+static char *tempfonts;
 
 static int useargb = 0;
 static Visual *visual;
@@ -148,7 +153,6 @@ drawitem(struct item *item, int x, int y, int w)
 static void
 drawmenu(void)
 {
-	//unsigned int curpos;
 	static int curpos, oldcurlen;
 	struct item *item;
 	int x = 0, y = 0, w;
@@ -163,8 +167,7 @@ drawmenu(void)
 	}
 	/* draw input field */
 	w = (lines > 0 || !matches) ? mw - x : inputw;
-	//drw_setscheme(drw, scheme[SchemeNorm]);
-	//drw_text(drw, x, 0, w, bh, lrpad / 2, text, 0);
+
 	w -= lrpad / 2;
 	x += lrpad / 2;
 
@@ -187,7 +190,6 @@ drawmenu(void)
 	drw_text_align(drw, x, 0, curpos, bh, text, cursor, AlignR);
 	drw_text_align(drw, x + curpos, 0, w - curpos, bh, text + cursor, strlen(text) - cursor, AlignL);
 	drw_rect(drw, x + curpos - 1, 2, 2, bh - 4, 1, 0);
-	// end
 
 	if (lines > 0) {
 		/* draw vertical list */
