@@ -18,11 +18,11 @@ The colors specified in `config.h` are only the fallback colors, they will be re
 ## Xresources settings
 
 ```
-dmenu.background = #101010
-dmenu.foreground = #bbbbbb
-dmenu.selbackground = #005577
-dmenu.selforeground = #eeeeee
-dmenu.midbackground = #00cc72
-dmenu.midforeground = #10ee92
+dmenu.background: #101010
+dmenu.foreground: #bbbbbb
+dmenu.selbackground: #005577
+dmenu.selforeground: #eeeeee
+dmenu.midbackground: #00cc72
+dmenu.midforeground: #10ee92
 ```
 
