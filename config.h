@@ -11,7 +11,7 @@ static const unsigned int alpha = 0xc8;
 
 /* -fn option overrides fonts[0]; default X11 font or font set */
 static char *fonts[] = {
-	"IBMPlex:size=15:antialias=true:file=/usr/share/fonts/truetype/ibm-plex/Blex Mono Nerd Font Complete.ttf"
+	"Fura Code Nerd Font:size=15:antialias=true"
 };
 static const char *prompt      = "$";      /* -p  option; prompt to the left of input field */
 

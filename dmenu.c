@@ -776,11 +776,7 @@ setup(void)
 			for (i = 0; i < n; i++)
 				if (INTERSECT(x, y, 1, 1, info[i]))
 					break;
-		/*
-		mw = MIN(MAX(max_textw() + promptw, SCREENWIDTH), info[i].width);
-		x = info[i].x_org + ((info[i].width - mw) / 2);
-		y = info[i].y_org + ((info[i].height - mh) / 2);
-		*/
+
 		mw = ((dmw > 0) ? dmw : MIN(MAX(max_textw() + promptw, SCREENWIDTH), info[i].width));
 		x = info[i].x_org + dmx + ((info[i].width - mw) / 2);
 		y = info[i].y_org + ((info[i].height - mh - dmy) / 2);
@@ -793,11 +789,6 @@ setup(void)
 			die("could not get embedding window attributes: 0x%lx",
 			    parentwin);
 
-		/*
-		mw = MIN(MAX(max_textw() + promptw, SCREENWIDTH), wa.width);
-		x = (wa.width - mw) / 2;
-		y = (wa.height - mh) / 2;
-		*/
 		mw = ((dmw > 0) ? dmw : MIN(MAX(max_textw() + promptw, SCREENWIDTH), info[i].width));
 		x = dmx + ((wa.width - mw) / 2);
 		y = ((wa.height - mh) / 2) - dmy;
@@ -913,6 +904,7 @@ main(int argc, char *argv[])
 			fstrstr = cistrstr;
 		} else if (i + 1 == argc)
 			usage();
+		
 		/* these options take one argument */
 		else if (!strcmp(argv[i], "-l"))   /* number of lines in vertical list */
 			lines = atoi(argv[++i]);
@@ -928,19 +920,15 @@ main(int argc, char *argv[])
 			prompt = argv[++i];
 		else if (!strcmp(argv[i], "-fn"))  /* font or font set */
 			fonts[0] = argv[++i];
+
 		else if (!strcmp(argv[i], "-nb"))  /* normal background color */
-			//colors[SchemeNorm][ColBg] = argv[++i];
 			colortemp[0] = argv[++i];
 		else if (!strcmp(argv[i], "-nf"))  /* normal foreground color */
-			//colors[SchemeNorm][ColFg] = argv[++i];
 			colortemp[1] = argv[++i];
 		else if (!strcmp(argv[i], "-sb"))  /* selected background color */
-			//colors[SchemeSel][ColBg] = argv[++i];
 			colortemp[2] = argv[++i];
 		else if (!strcmp(argv[i], "-sf"))  /* selected foreground color */
-			//colors[SchemeSel][ColFg] = argv[++i];
 			colortemp[3] = argv[++i];
-
 		else if (!strcmp(argv[i], "-mb"))  /* middle background color */
 			colortemp[4] = argv[++i];
 		else if (!strcmp(argv[i], "-mf"))  /* middle foreground color */
