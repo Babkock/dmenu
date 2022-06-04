@@ -1,6 +1,6 @@
 # dmenu
 
-[![Build Status](https://travis-ci.org/Babkock/dmenu.svg?branch=master)](https://travis-ci.org/Babkock/dmenu)
+[![Build Status](https://travis-ci.org/Babkock/dmenu.svg?branch=master)](https://travis-ci.org/Babkock/dmenu) [![pipeline status](https://gitlab.com/tbsuckless/dmenu/badges/master/pipeline.svg)](https://gitlab.com/tbsuckless/dmenu/-/commits/master)
 
 Suckless [dynamic menu](https://tools.suckless.org/dmenu). The following patches were applied by hand.
 
