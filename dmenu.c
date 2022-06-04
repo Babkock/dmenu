@@ -26,6 +26,9 @@
 static char text[BUFSIZ] = "";
 static char *embed;
 static int bh, mw, mh;
+static int dmx = 0; /* put dmenu at this x offset */
+static int dmy = 0; /* put dmenu at this y offset */
+static unsigned int dmw = 0; /* make dmenu this wide */
 static int inputw = 0, promptw;
 static int lrpad; /* sum of left and right padding */
 static size_t cursor;
@@ -773,10 +776,14 @@ setup(void)
 			for (i = 0; i < n; i++)
 				if (INTERSECT(x, y, 1, 1, info[i]))
 					break;
-	
+		/*
 		mw = MIN(MAX(max_textw() + promptw, SCREENWIDTH), info[i].width);
 		x = info[i].x_org + ((info[i].width - mw) / 2);
 		y = info[i].y_org + ((info[i].height - mh) / 2);
+		*/
+		mw = ((dmw > 0) ? dmw : MIN(MAX(max_textw() + promptw, SCREENWIDTH), info[i].width));
+		x = info[i].x_org + dmx + ((info[i].width - mw) / 2);
+		y = info[i].y_org + ((info[i].height - mh - dmy) / 2);
 
 		XFree(info);
 	} else
@@ -786,9 +793,14 @@ setup(void)
 			die("could not get embedding window attributes: 0x%lx",
 			    parentwin);
 
+		/*
 		mw = MIN(MAX(max_textw() + promptw, SCREENWIDTH), wa.width);
 		x = (wa.width - mw) / 2;
 		y = (wa.height - mh) / 2;
+		*/
+		mw = ((dmw > 0) ? dmw : MIN(MAX(max_textw() + promptw, SCREENWIDTH), info[i].width));
+		x = dmx + ((wa.width - mw) / 2);
+		y = ((wa.height - mh) / 2) - dmy;
 	}
 
 	inputw = MIN(inputw, mw/3);
@@ -835,8 +847,9 @@ static void
 usage(void)
 {
 	fputs("usage: dmenu [-bfiv] [-l lines] [-p prompt] [-fn font] [-m monitor]\n"
-	      "             [-nb color] [-nf color] [-sb color] [-sf color] [-w windowid]\n"
-	      "             [-mb color] [-mf color]\n", stderr);
+			"             [-x xoffset] [-y yoffset] [-z width]\n"
+			"             [-nb color] [-nf color] [-sb color] [-sf color] [-w windowid]\n"
+			"             [-mb color] [-mf color]\n", stderr);
 	exit(1);
 }
 
@@ -903,6 +916,12 @@ main(int argc, char *argv[])
 		/* these options take one argument */
 		else if (!strcmp(argv[i], "-l"))   /* number of lines in vertical list */
 			lines = atoi(argv[++i]);
+		else if (!strcmp(argv[i], "-x"))   /* window x offset */
+			dmx = atoi(argv[++i]);
+		else if (!strcmp(argv[i], "-y"))   /* window y offset */
+			dmy = atoi(argv[++i]);
+		else if (!strcmp(argv[i], "-w"))   /* make dmenu this wide */
+			dmw = atoi(argv[++i]);
 		else if (!strcmp(argv[i], "-m"))
 			mon = atoi(argv[++i]);
 		else if (!strcmp(argv[i], "-p"))   /* adds prompt to left of input field */

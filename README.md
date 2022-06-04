@@ -12,6 +12,7 @@ Suckless [dynamic menu](https://tools.suckless.org/dmenu). The following patches
 * [Mouse support](https://tools.suckless.org/dmenu/patches/mouse-support/)
 * [Scroll](https://tools.suckless.org/dmenu/patches/scroll/) on long lines
 * [Window border](https://tools.suckless.org/dmenu/patches/border/)
+* [Xyw options](https://tools.suckless.org/dmenu/patches/xyw/) for x offset, y offset, and width
 
 The colors specified in `config.h` are only the fallback colors, they will be replaced by Xresources.
 
