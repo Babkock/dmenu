@@ -1,5 +1,7 @@
 # dmenu
 
+## This repository is archived. [It has moved to GitLab.](https://gitlab.com/tbsuckless/dmenu)
+
 [![Build Status](https://travis-ci.org/Babkock/dmenu.svg?branch=master)](https://travis-ci.org/Babkock/dmenu)
 
 Suckless [dynamic menu](https://tools.suckless.org/dmenu). The following patches were applied by hand.
