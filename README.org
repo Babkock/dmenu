@@ -1,0 +1,33 @@
+#+TITLE: dmenu (dynamic menu)
+#+AUTHOR: Tanner Babcock
+#+EMAIL: babkock@protonmail.com
+#+LANGUAGE: en
+
+[[https://travis-ci.org/Babkock/dmenu][https://travis-ci.org/Babkock/dmenu.svg?branch=master]] [[https://gitlab.com/tbsuckless/dmenu/-/commits/master][https://gitlab.com/tbsuckless/dmenu/badges/master/pipeline.svg]]
+
+[[https://gitlab.com/tbsuckless/dmenu/-/raw/master/screenshot.png][https://gitlab.com/tbsuckless/dmenu/-/raw/master/screenshot.png]]
+
+Suckless [[https://tools.suckless.org/dmenu][dynamic menu]]. The following patches were applied by hand.
+
+* Patches
+
+- Additional color scheme in =config.h=
+- [[https://tools.suckless.org/dmenu/patches/alpha/][Alpha]]
+- [[https://tools.suckless.org/dmenu/patches/xresources/][Xresources support]]
+- [[https://tools.suckless.org/dmenu/patches/mouse-support/][Mouse support]]
+- [[https://tools.suckless.org/dmenu/patches/scroll/][Scroll]]
+- [[https://tools.suckless.org/dmenu/patches/border/][Window border]]
+- [[https://tools.suckless.org/dmenu/patches/xyw/][xyw options]] for x offset, y offset, and width
+
+The colors specified in =config.h= are only the fallback colors, they will be replaced by =.Xresources=.
+
+* Xresources settings
+
+| Xresources option       | Example color |
+|-------------------------+---------------|
+| =dmenu.background=        | #101010       |
+| =dmenu.foreground=        | #bbbbbb       |
+| =dmenu.selbackground=     | #005577       |
+| =dmenu.selforeground=     | #eeeeee       |
+| =dmenu.midbackground=     | #00cc72       |
+| =dmenu.midforeground=     | #10ee92       |
