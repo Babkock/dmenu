@@ -4,8 +4,9 @@
 #+LANGUAGE: en
 
 [[https://travis-ci.org/Babkock/dmenu][https://travis-ci.org/Babkock/dmenu.svg?branch=master]] [[https://gitlab.com/tbsuckless/dmenu/-/commits/master][https://gitlab.com/tbsuckless/dmenu/badges/master/pipeline.svg]]
-[[https://gitlab.com/tbsuckless/dmenu/-/raw/master/screenshot.png][https://gitlab.com/tbsuckless/dmenu/-/raw/master/screenshot.png]]
 [[https://github.com/Babkock/dmenu/actions/workflows/c-cpp.yml/badge.svg]]
+
+[[https://gitlab.com/tbsuckless/dmenu/-/raw/master/screenshot.png][https://gitlab.com/tbsuckless/dmenu/-/raw/master/screenshot.png]]
 
 Suckless [[https://tools.suckless.org/dmenu][dynamic menu]]. The following patches were applied by hand.
 
