@@ -6,12 +6,12 @@
 
 static int topbar = 1;                      /* -b  option; if 0, dmenu appears at bottom     */
 
-unsigned int border_width = 4;
-static const unsigned int alpha = 0xc8;
+unsigned int border_width = 5;
+static const unsigned int alpha = 0x88;
 
 /* -fn option overrides fonts[0]; default X11 font or font set */
 static char *fonts[] = {
-	"SpaceMono Nerd Font:size=16:antialias=true"
+	"SpaceMono Nerd Font:size=17:antialias=true"
 };
 static const char *prompt      = "$";      /* -p  option; prompt to the left of input field */
 

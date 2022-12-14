@@ -31,3 +31,4 @@ The colors specified in =config.h= are only the fallback colors, they will be re
 | =dmenu.selforeground=     | #eeeeee       |
 | =dmenu.midbackground=     | #00cc72       |
 | =dmenu.midforeground=     | #10ee92       |
+
